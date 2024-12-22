@@ -21,7 +21,8 @@ const LANG_MAP = {
 function detectLanguage(text) {
   const cleanText = text.replace(/^RT @[\w]+: /, '');
   const detectedLang = franc(cleanText);
-  return LANG_MAP[detectedLang] || 'EN';  // 默认使用英语
+  console.log('检测到的语言:', detectedLang, '映射为:', LANG_MAP[detectedLang] || 'EN');
+  return LANG_MAP[detectedLang] || 'EN';
 }
 
 // 检查文本是否为中文
@@ -45,6 +46,12 @@ function extractRetweetContent(content) {
 
 // 格式化消息
 async function formatNotification(data) {
+  console.log('环境变量:', {
+    TELEGRAM_BOT_TOKEN: !!process.env.TELEGRAM_BOT_TOKEN,
+    ADMIN_CHAT_ID: process.env.ADMIN_CHAT_ID,
+    DEEPL_API_KEY: !!process.env.DEEPL_API_KEY
+  });
+
   try {
     let payload = data;
     if (typeof data === 'string') {
@@ -76,6 +83,7 @@ async function formatNotification(data) {
     
     message += `${content}\n`;
     if (translation) {
+      console.log('翻译结果:', translation);
       message += `\n${translation}\n`;
     }
     
